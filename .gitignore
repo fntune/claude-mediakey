@@ -1,0 +1,15 @@
+# Binary
+mediakey
+
+# macOS
+.DS_Store
+._*
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+
+# Swift
+*.swiftmodule
+*.swiftdoc
