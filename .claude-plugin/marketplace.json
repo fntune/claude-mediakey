@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-mediakey",
+  "owner": {
+    "name": "fntune",
+    "url": "https://github.com/fntune"
+  },
+  "plugins": [
+    {
+      "name": "claude-mediakey",
+      "source": "./",
+      "description": "Zero-dependency macOS media controller with enable/disable toggle. Auto pause/resume media during Claude Code sessions.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "author": {
+        "name": "fntune",
+        "email": "hello@fntune.com",
+        "url": "https://github.com/fntune"
+      }
+    }
+  ]
+}

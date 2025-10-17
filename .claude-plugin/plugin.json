@@ -1,0 +1,22 @@
+{
+  "name": "claude-mediakey",
+  "version": "1.0.0",
+  "description": "Control macOS media playback from Claude Code - pause/play music during coding sessions with hooks and slash commands",
+  "author": {
+    "name": "fntune",
+    "email": "hello@fntune.com",
+    "url": "https://github.com/fntune"
+  },
+  "homepage": "https://github.com/fntune/claude-mediakey",
+  "repository": "https://github.com/fntune/claude-mediakey",
+  "license": "MIT",
+  "keywords": [
+    "media",
+    "music",
+    "playback",
+    "control",
+    "macos",
+    "hooks",
+    "automation"
+  ]
+}
