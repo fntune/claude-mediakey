@@ -1,6 +1,6 @@
 {
   "name": "claude-mediakey",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Control macOS media playback from Claude Code - pause/play music during coding sessions with hooks and slash commands",
   "author": {
     "name": "fntune",
