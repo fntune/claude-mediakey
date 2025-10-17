@@ -9,9 +9,8 @@ let NX_KEYTYPE_PLAY: UInt32 = 16
 let NX_KEYTYPE_NEXT: UInt32 = 17
 let NX_KEYTYPE_PREVIOUS: UInt32 = 18
 
-// State file path - store in same directory as binary
-let binaryDir = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent().path
-let stateFilePath = binaryDir + "/.mediakey_enabled"
+// State file path - store in current working directory (per-project state)
+let stateFilePath = FileManager.default.currentDirectoryPath + "/.mediakey_enabled"
 
 // Check if mediakey is enabled
 func isEnabled() -> Bool {

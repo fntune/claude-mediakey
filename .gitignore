@@ -1,6 +1,9 @@
 # Binary
 mediakey
 
+# State file (per-directory)
+.mediakey_enabled
+
 # macOS
 .DS_Store
 ._*

@@ -60,11 +60,11 @@ mediakey/
    - 10ms delay (`usleep(10000)`) ensures event processing before function returns
 
 2. **Enable/Disable state management**
-   - State file: `.mediakey_enabled` (same directory as binary)
+   - State file: `.mediakey_enabled` (current working directory - per-project)
    - Functions: `isEnabled()`, `setEnabled()`
    - Default: disabled (opt-in)
    - Commands exit silently when disabled
-   - Uses `CommandLine.arguments[0]` to determine binary location
+   - Uses `FileManager.default.currentDirectoryPath` for per-directory state
 
 3. **Command-line parser** - Maps strings to key codes
    - Media commands: play, pause, playpause, next, prev, volup, voldown
@@ -125,13 +125,18 @@ This automatically:
 
 ### Self-Contained Architecture
 
-**Everything stays in the plugin directory** - no system-wide installation:
+**Binary stays in the plugin directory** - no system-wide installation:
 - Binary: `~/.claude/plugins/marketplaces/claude-mediakey/mediakey`
-- State: `~/.claude/plugins/marketplaces/claude-mediakey/.mediakey_enabled`
+- State: `.mediakey_enabled` in each project directory (per-directory state)
 - No PATH modification required
 - Hooks reference full path to plugin directory
 
-**Benefit**: Uninstalling the plugin (`/plugin uninstall claude-mediakey`) removes everything automatically!
+**Per-Directory State:**
+- Each project has its own `.mediakey_enabled` file
+- Enables independent control across multiple projects
+- Parallel Claude Code sessions don't interfere with each other
+
+**Benefit**: Uninstalling the plugin removes the binary. Project state files remain but become inert.
 
 ### Pre-configured Hooks
 

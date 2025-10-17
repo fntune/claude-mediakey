@@ -15,7 +15,6 @@ claude-mediakey/
 │   └── hooks.json          # Pre-configured event hooks
 ├── mediakey.swift          # Source code
 ├── mediakey                # Compiled binary (created by install.sh)
-├── .mediakey_enabled       # State file (created by user)
 ├── install.sh              # Installation script (runs on SessionStart)
 ├── Makefile                # Build commands
 ├── PLUGIN.md               # This file
@@ -97,37 +96,44 @@ When users run `/plugin install fntune/claude-mediakey`:
 
 ## Self-Contained Architecture
 
-**Key Design Decision**: Everything stays in the plugin directory.
+**Key Design Decision**: Binary in plugin directory, state per-project.
 
 ### Why This Matters
 
 Traditional approach (problems):
 - Binary installed to `~/bin/` → left behind on uninstall
-- State in `~/.mediakey_enabled` → left behind on uninstall
+- Global state file → can't have different settings per project
 - PATH modified in `~/.zshrc` → left behind on uninstall
 - Requires manual cleanup
 
 Self-contained approach (solution):
 - Binary: `~/.claude/plugins/marketplaces/claude-mediakey/mediakey`
-- State: `~/.claude/plugins/marketplaces/claude-mediakey/.mediakey_enabled`
+- State: `.mediakey_enabled` in each project directory (per-project)
 - No PATH modification
-- **Uninstalling removes EVERYTHING automatically**
+- **Uninstalling removes the binary automatically**
+
+### Per-Directory State Benefits
+
+1. **Independent Control**: Enable in project A, disable in project B
+2. **No Interference**: Parallel Claude Code sessions work independently
+3. **User Preference**: Each project can have its own media control setting
+4. **Clean Uninstall**: Binary removed, state files become inert
 
 ### Implementation Details
 
-1. **Binary Location**: Determined using `CommandLine.arguments[0]`
-2. **State Location**: Same directory as binary (`binaryDir + "/.mediakey_enabled"`)
+1. **Binary Location**: `~/.claude/plugins/marketplaces/claude-mediakey/mediakey`
+2. **State Location**: `FileManager.default.currentDirectoryPath + "/.mediakey_enabled"`
 3. **Hooks**: Use full paths to plugin directory
-4. **Auto-cleanup**: When plugin directory deleted, all files gone
+4. **Per-Project**: Each directory has its own state file
 
 ## Enable/Disable Feature
 
-The plugin includes a state management system:
-- State stored in `.mediakey_enabled` (same directory as binary)
-- Default: **disabled** (opt-in)
+The plugin includes a per-directory state management system:
+- State stored in `.mediakey_enabled` (current working directory)
+- Default: **disabled** (opt-in per directory)
 - Commands: `enable`, `disable`, `status`
-- Hooks silently exit when disabled
-- State persists across sessions but deleted with plugin
+- Hooks silently exit when disabled in that directory
+- State persists per-project, independent across directories
 
 ## Platform Requirements
 
@@ -139,14 +145,17 @@ The plugin includes a state management system:
 
 To create a self-contained plugin that auto-cleans on uninstall:
 
-### 1. Keep Everything in Plugin Directory
+### 1. Use Per-Directory State Files
 
 ```swift
-// Determine binary location from CommandLine.arguments[0]
-let binaryDir = URL(fileURLWithPath: CommandLine.arguments[0])
-    .deletingLastPathComponent().path
-let stateFilePath = binaryDir + "/.mystate"
+// Store state in current working directory (per-project)
+let stateFilePath = FileManager.default.currentDirectoryPath + "/.mystate"
 ```
+
+**Benefits:**
+- Each project has independent state
+- Parallel sessions don't interfere
+- Users can have different preferences per project
 
 ### 2. Use Full Paths in Hooks
 
@@ -188,8 +197,9 @@ let stateFilePath = binaryDir + "/.mystate"
 - ✅ `commands/` - Slash commands with frontmatter
 - ✅ `install.sh` - Build script (called by SessionStart)
 - ✅ Binary stays in plugin directory
-- ✅ State files stay in plugin directory
+- ✅ State files in project directories (per-directory state)
 - ✅ No PATH modification
+- ✅ Add state files to `.gitignore`
 
 ### Benefits
 

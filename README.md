@@ -24,6 +24,7 @@ mediakey enable      # Auto-pause during Claude Code sessions
 - Long coding sessions with background music
 - Podcast listeners who want silence during focus moments
 - Anyone tired of CMD+Tab → Pause → CMD+Tab back to Claude
+- Teams running multiple Claude Code sessions across different projects (per-directory state means no interference)
 
 ---
 
@@ -121,7 +122,12 @@ Or use directly from the build directory:
 | `mediakey disable` | Disable automation hooks |
 | `mediakey status` | Show current state (enabled/disabled) |
 
-**Note:** By default, mediakey starts **disabled**. Run `mediakey enable` to activate automatic media control during Claude Code sessions.
+**Note:** By default, mediakey starts **disabled** in each directory. Run `mediakey enable` in your project directory to activate automatic media control for that specific project.
+
+**Per-Directory State:** Each project has its own enabled/disabled state (stored in `.mediakey_enabled`). This means:
+- You can enable mediakey in project A but not project B
+- Parallel Claude Code sessions in different directories won't interfere
+- State persists per-project, not globally
 
 ### Claude Code Integration
 
@@ -297,15 +303,21 @@ By posting events to the HID system tap, mediakey simulates actual hardware medi
 
 ### State File
 
-mediakey stores its enabled/disabled state in `.mediakey_enabled` in the same directory as the binary.
+mediakey stores its enabled/disabled state in `.mediakey_enabled` in the **current working directory** (per-project).
 
-**Claude Code plugin:** `~/.claude/plugins/marketplaces/claude-mediakey/.mediakey_enabled`
+**Location:** `.mediakey_enabled` in each project directory where you run `mediakey enable`
 
-**Standalone:** `./mediakey_enabled` (current directory)
+**Content:**
+- `1` = enabled (automation active in this directory)
+- `0` = disabled (automation inactive in this directory)
 
-The file contains:
-- `1` = enabled (automation active)
-- `0` = disabled (automation inactive)
+**Per-Directory Behavior:**
+- Each project directory has its own independent state
+- Run `mediakey enable` in project A → only affects project A
+- Run `mediakey enable` in project B → only affects project B
+- Parallel Claude Code sessions in different directories won't interfere with each other
+
+**Gitignore:** Add `.mediakey_enabled` to your `.gitignore` since it's a local preference file
 
 ### Claude Code Hooks
 
