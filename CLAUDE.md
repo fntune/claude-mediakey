@@ -135,11 +135,12 @@ This automatically:
 
 ### Pre-configured Hooks
 
-The plugin includes three hooks (from `hooks/hooks.json`):
+The plugin includes four hooks (from `hooks/hooks.json`):
 
 1. **SessionStart** - Auto-builds binary on first session if not present
-2. **UserPromptSubmit** - Pauses media when user submits a prompt
-3. **Stop** - Resumes media when Claude stops responding
+2. **UserPromptSubmit** - Resumes media when user submits a prompt (Claude is working)
+3. **Notification** - Pauses media when Claude needs user input (user needs to focus)
+4. **Stop** - Pauses media when Claude stops responding (user needs to read)
 
 All hooks use full paths to the plugin directory and respect the enable/disable state.
 

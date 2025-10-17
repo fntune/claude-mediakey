@@ -65,8 +65,9 @@ Enables installation via marketplace:
 Pre-configured event hooks with **full paths** to plugin directory:
 
 - **SessionStart**: Auto-builds binary on first session if not present
-- **UserPromptSubmit**: Pauses media when user submits a prompt
-- **Stop**: Resumes media when Claude stops responding
+- **UserPromptSubmit**: Resumes media when user submits a prompt (Claude is working)
+- **Notification**: Pauses media when Claude needs user input (user needs to focus)
+- **Stop**: Pauses media when Claude stops responding (user needs to read)
 
 **Important**: Hooks use full paths like `~/.claude/plugins/marketplaces/claude-mediakey/mediakey` to reference the binary in the plugin directory.
 

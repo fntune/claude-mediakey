@@ -14,8 +14,22 @@ mediakey enable      # Auto-pause during Claude Code sessions
 
 ---
 
+## Why Use This?
+
+**The Problem:** You're coding with Claude, listening to music. Claude asks a question—you switch to pause Spotify. You answer—switch back to resume. Claude finishes—pause again. Repeat all day.
+
+**The Solution:** mediakey automates this. Music plays while Claude works (you're waiting anyway), pauses when you need to focus (reading responses, typing). No window switching, no manual control, just natural focus cycles.
+
+**Perfect for:**
+- Long coding sessions with background music
+- Podcast listeners who want silence during focus moments
+- Anyone tired of CMD+Tab → Pause → CMD+Tab back to Claude
+
+---
+
 ## Table of Contents
 
+- [Why Use This?](#why-use-this)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Command Reference](#command-reference)
@@ -113,9 +127,44 @@ Or use directly from the build directory:
 
 When installed as a plugin, mediakey automatically:
 
-1. **Pauses** media when you submit a prompt to Claude
-2. **Resumes** media when Claude stops responding
+1. **Resumes** media when you submit a prompt (Claude is working, you can relax)
+2. **Pauses** media when Claude needs your input or finishes (so you can focus)
 3. **Shows** macOS notifications for state changes
+
+#### How The Workflow Works
+
+The plugin uses hooks to create a seamless focus management experience:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ YOU: Reading docs, thinking about code                      │
+│ 🔇 Media: PAUSED (you need focus)                          │
+└─────────────────────────────────────────────────────────────┘
+                           │
+                    [You hit submit]
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ CLAUDE: Processing your request, running tools              │
+│ 🎵 Media: PLAYING (you can relax, listen to music)         │
+└─────────────────────────────────────────────────────────────┘
+                           │
+              [Claude finishes or needs input]
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ YOU: Reading response, deciding next action                 │
+│ 🔇 Media: PAUSED (you need focus)                          │
+└─────────────────────────────────────────────────────────────┘
+                           │
+                    [You hit submit]
+                           ↓
+                      (cycle repeats)
+```
+
+**The Philosophy:**
+- **You're working** (reading, typing, thinking) → Music distracts → Pause
+- **Claude is working** (processing, running tools) → You're waiting → Play
+
+This creates natural focus cycles without manual media control.
 
 #### Using the `/media` Slash Command
 
@@ -136,14 +185,14 @@ When installed as a plugin, mediakey automatically:
 #### Workflow Example
 
 ```bash
-# Enable auto-pause for focused coding
+# Enable automatic media control
 /media enable
 
 # Work on your code, chat with Claude
-# Media pauses automatically when you submit prompts
-# Media resumes when Claude finishes responding
+# Media plays while Claude processes your requests
+# Media pauses when Claude needs input or finishes (so you can focus)
 
-# Disable during compilation (keep music playing)
+# Disable when you want manual control
 /media disable
 ```
 
@@ -269,6 +318,13 @@ When installed as a plugin, hooks are automatically configured in `hooks/hooks.j
       "matcher": "*",
       "hooks": [{
         "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/mediakey play"
+      }]
+    }],
+    "Notification": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
         "command": "${CLAUDE_PLUGIN_ROOT}/mediakey pause"
       }]
     }],
@@ -276,12 +332,17 @@ When installed as a plugin, hooks are automatically configured in `hooks/hooks.j
       "matcher": "*",
       "hooks": [{
         "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/mediakey play"
+        "command": "${CLAUDE_PLUGIN_ROOT}/mediakey pause"
       }]
     }]
   }
 }
 ```
+
+**Hook Behavior:**
+- **UserPromptSubmit** → Resume media (Claude is working)
+- **Notification** → Pause media (you need to focus/read)
+- **Stop** → Pause media (you need to read the response)
 
 The hooks only fire when mediakey is **enabled**. When disabled, the commands exit silently without affecting playback.
 

@@ -17,6 +17,17 @@
         "hooks": [
           {
             "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/mediakey play"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/mediakey pause"
           }
         ]
@@ -28,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/mediakey play"
+            "command": "${CLAUDE_PLUGIN_ROOT}/mediakey pause"
           }
         ]
       }
